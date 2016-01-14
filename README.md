@@ -1,10 +1,6 @@
 # Mastemind in Ruby (with AI)
 Command-line Mastermind game (with AI) written in Ruby
 
-This is a command-line based Mastermind game written in Ruby where
-the player can either attempt to break a computer-generated code or
-create a code that the computer breaks. 
-
 ####RULES
 The codemaker makes a code by choosing four colors (out of 
 six possible colors) in their chosen order. The codebreaker has 12
