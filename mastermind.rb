@@ -47,13 +47,13 @@ class Board
 	attr_reader :guess, :count_guess, :total_guesses, :secret_code
 	
 	def initialize
-		@possible_combos = COLORS.repeated_permutation(4).to_a	#1296 possible combos
 		@guess ||= "xxxx"
 		@secret_code ||= "zzzz"
 		@count_guess = 0
 		@total_guesses = 12
 		@right_color = 0			# right color only
 		@right_spot = 0				# right color and spot
+		@possible_combos = COLORS.repeated_permutation(4).to_a			# 1296 possible combos		
 	end
 	
 	def start
@@ -71,7 +71,7 @@ class Board
 				puts "What is your guess?"
 				@guess = gets.chomp
 				puts "Your guess is #{@guess}."
-				check_guess @guess
+				check_guess(@guess, @secret_code)
 			end
 		end
 	end
@@ -84,56 +84,74 @@ class Board
 	end
 	
 	def cpu_guesses
-		unless guessed(@secret_code)
+		unless guessed(secret_code)
 			12.times do 
 				puts "What is your guess?"
 				@guess = cpu_best_guess
-				puts "Your guess is #{@guess}."
-				check_guess @guess
+				puts "The CPU's guess is #{@guess}."
+				check_guess(@guess, @secret_code)
 				filter_combos(@guess, @possible_combos, @right_color, @right_spot)
+				#puts @possible_combos
 			end
 		end
 	end
 	
 	def cpu_best_guess
 		#return "rrbb" if (@possible_combos.length == 1296)
-		return @possible_combos.sample(1).join			# picks combo randomly from list of permutations (@possible_combos)
+		cpu_guess = @possible_combos.sample(1).join	
+		return cpu_guess
 	end
 	
 	def filter_combos(last_guess, permutations, right_color, right_spot)
 		@last_guess_rc = right_color
 		@last_guess_rs = right_spot
-		# Loop through all the permutations and compare it with last guess
+		# Loop through all the permutations and compare it with the last guess
 		# If the result of the comparison betweens permutations and the last guess 
 		# does not have same right_color and right_spot values as the last_guess compared with
 		# the secret_code, then remove it from the array. 
-		
 		# Notes: right_color and right_spot need to be stored into an instance variable (to filter_combos method)
 		# Do .each loop through all permutations
 		# For each permutation, call position(permutation, last_guess)
 		# Compare @right_color with @last_guess_rc and compare @right_spot with @last_guess_rs
 		# If they are not equal then delete permutation from array
 		
+		@possible_combos.each do |permutation|
+			positions(permutation.join, last_guess)
+			
+			#@possible_combos.delete_if { |@last_guess_rc != @right_color && @last_guess_rs != @right_spot }
+			if @last_guess_rc < @right_color && @last_guess_rs < @right_spot
+				@possible_combos.delete(permutation)
+			end
+		end	
+		puts @possible_combos.length
 	end
+	
 	
 	def summon_cpu
 		cpu = PlayerAI.new(@secret_code)
 		cpu.start
 	end
 	
-	def check_guess guess
+	def check_guess(current_guess, current_secret_code)
 		@count_guess += 1
-		guessed(@secret_code)
-		positions(@guess, @secret_code)
+		guessed(current_secret_code)
+		positions(current_guess, current_secret_code)
+		puts "Right color(s) in wrong place: #{@right_color}"
+		puts "Right color(s) in the right place: #{@right_spot}"
 	end
 	
 	def guessed(secret_code)
-		@guess == secret_code ? (puts "You win!") : remaining_guesses
+		@guess == secret_code ? win : remaining_guesses
+	end
+	
+	def win
+		puts "You win!"
+		exit
 	end
 	
 	def remaining_guesses
-		puts @total_guesses
-		puts @count_guess
+		#puts @total_guesses
+		#puts @count_guess
 		rem_guesses = @total_guesses - @count_guess
 		puts "#{rem_guesses} guesses remaining..."
 		if rem_guesses == 0
@@ -142,32 +160,26 @@ class Board
 		end
 	end
 	
-	def positions(permutation, last_guess) 				# works for codebreaker too 
+	def positions(permutation, last_guess) 	 
 		@right_color = 0
 		@right_spot = 0
 		
-		last_guess.split("").each_index do |i|			
-			temp = permutation.split("")
-			temp.each_index do |j|
+		temp = permutation.split("") 
+		
+		last_guess.split("").map.with_index do |x, i|		
+			temp.map.with_index do |y, j|
+				#puts "i: #{i} & j: #{j} & temp[j]: #{temp[j]} & temp[i]: #{temp[i]} & last_guess[i]: #{last_guess[i]}"
 				if temp[i] == last_guess[i]		
 					temp[i] = 'x'
 					@right_spot += 1
 					break
 				elsif temp[j] == last_guess[i]
-					temp[i] = 'x'
+					temp[j] = 'x'
 					@right_color += 1
 					break
 				end
 			end
 		end
-		
-		unless permutation == last_guess
-			puts "Right color(s) in wrong place: #{@right_color}"
-			puts "#{@right_spot} color(s) in the right place."
-		else
-			puts "Congrats!! You win! :D"
-			exit
-		end	
 	end
 end
 
