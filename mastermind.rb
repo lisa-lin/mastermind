@@ -50,7 +50,7 @@ class Board
 		@guess ||= "xxxx"
 		@secret_code ||= "zzzz"
 		@count_guess = 0
-		@total_guesses = 12
+		@total_guesses = 100
 		@right_color = 0			# right color only
 		@right_spot = 0				# right color and spot
 		@possible_combos = COLORS.repeated_permutation(4).to_a			# 1296 possible combos		
@@ -85,7 +85,7 @@ class Board
 	
 	def cpu_guesses
 		unless guessed(secret_code)
-			12.times do 
+			100.times do 
 				puts "What is your guess?"
 				@guess = cpu_best_guess
 				puts "The CPU's guess is #{@guess}."
@@ -118,8 +118,8 @@ class Board
 		@possible_combos.each do |permutation|
 			positions(permutation.join, last_guess)
 			
-			#@possible_combos.delete_if { |@last_guess_rc != @right_color && @last_guess_rs != @right_spot }
-			if @last_guess_rc < @right_color && @last_guess_rs < @right_spot
+			#if @last_guess_rc < @right_color && @last_guess_rs < @right_spot
+			if ((@last_guess_rc + @last_guess_rs) < (@right_color + @right_spot))
 				@possible_combos.delete(permutation)
 			end
 		end	
