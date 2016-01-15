@@ -98,9 +98,9 @@ class Board
 	
 	def cpu_best_guess
 		#return "rrbb" if (@possible_combos.length == 1296)
-		if @total_guesses - @count_guess == 12
-			return "rrbb"
-		end
+		return "rrgg" if @total_guesses - @count_guess == 12
+		return "bbyy" if @total_guesses - @count_guess == 11
+		return "oopp" if @total_guesses - @count_guess == 10
 		
 		cpu_guess = @possible_combos.sample(1).join	
 		return cpu_guess
@@ -127,8 +127,8 @@ class Board
 			end
 			
 			# Compare the sum of the last guess' rc and rs with the sum of the permutation's rc and rs
-			# If they are not equal then delete permutation from array
-			if ((@last_guess_rc + @last_guess_rs) < (@right_color + @right_spot))
+			# If greater than then delete permutation from array
+			if ((@last_guess_rc + @last_guess_rs) > (@right_color + @right_spot))
 				@possible_combos.delete(permutation)
 			end
 		end	

@@ -21,8 +21,8 @@ The AI algorithm is similar to the one developed by Donald Knuth which solves th
 
 It takes the following steps:
 
-1. Guess a code in 'aaaa' format. Code is selected randomly.
-2. Remove from the set of possibilities any code that yields the same feedback as the last guess.
+1. Guess a code in 'aabb' format. 
+2. Remove from the set of possibilities any code that yields a lower feedback score compared to the last guess.
 3. Make a random guess from the remaining set.
 4. Repeat until it wins.
 
