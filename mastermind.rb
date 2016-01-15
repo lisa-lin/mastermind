@@ -50,7 +50,7 @@ class Board
 		@guess ||= "xxxx"
 		@secret_code ||= "zzzz"
 		@count_guess = 0
-		@total_guesses = 100
+		@total_guesses = 12
 		@right_color = 0			# right color only
 		@right_spot = 0				# right color and spot
 		@possible_combos = COLORS.repeated_permutation(4).to_a			# 1296 possible combos		
@@ -85,7 +85,7 @@ class Board
 	
 	def cpu_guesses
 		unless guessed(secret_code)
-			100.times do 
+			12.times do 
 				puts "What is your guess?"
 				@guess = cpu_best_guess
 				puts "The CPU's guess is #{@guess}."
@@ -98,6 +98,10 @@ class Board
 	
 	def cpu_best_guess
 		#return "rrbb" if (@possible_combos.length == 1296)
+		if @total_guesses - @count_guess == 12
+			return "rrbb"
+		end
+		
 		cpu_guess = @possible_combos.sample(1).join	
 		return cpu_guess
 	end
@@ -105,20 +109,25 @@ class Board
 	def filter_combos(last_guess, permutations, right_color, right_spot)
 		@last_guess_rc = right_color
 		@last_guess_rs = right_spot
+		lg_array = last_guess.clone.split("")
 		# Loop through all the permutations and compare it with the last guess
-		# If the result of the comparison betweens permutations and the last guess 
-		# does not have same right_color and right_spot values as the last_guess compared with
-		# the secret_code, then remove it from the array. 
 		# Notes: right_color and right_spot need to be stored into an instance variable (to filter_combos method)
-		# Do .each loop through all permutations
+		# Do each loop through all permutations
 		# For each permutation, call position(permutation, last_guess)
-		# Compare @right_color with @last_guess_rc and compare @right_spot with @last_guess_rs
-		# If they are not equal then delete permutation from array
 		
 		@possible_combos.each do |permutation|
 			positions(permutation.join, last_guess)
 			
-			#if @last_guess_rc < @right_color && @last_guess_rs < @right_spot
+			# If last guess' right color and spot both equal 0, loop through lg_array 
+			# Delete combos with lg_array's colors from the set of possible combos
+			if @last_guess_rc + @last_guess_rs == 0
+				lg_array.each do |color|
+					@possible_combos.delete_if {|permutation| permutation.include?(color)}
+				end
+			end
+			
+			# Compare the sum of the last guess' rc and rs with the sum of the permutation's rc and rs
+			# If they are not equal then delete permutation from array
 			if ((@last_guess_rc + @last_guess_rs) < (@right_color + @right_spot))
 				@possible_combos.delete(permutation)
 			end
@@ -165,11 +174,32 @@ class Board
 		@right_spot = 0
 		
 		temp = permutation.split("") 
+		secret_temp = last_guess.clone
 		
+		secret_temp.split("").map.with_index do |x, i|
+			if temp[i] == secret_temp[i]
+				temp[i] = 'x'
+				secret_temp[i] = 'z'
+				@right_spot += 1
+			end
+		end
+		
+		secret_temp.split("").map.with_index do |x, i|
+			temp.map.with_index do |y, j|
+				#puts "i: #{i} & j: #{j} & temp[j]: #{temp[j]} & last_guess[i]: #{last_guess[i]} & right spot: #{@right_spot} & right color: #{@right_color}"
+				if temp[j] == secret_temp[i]
+					temp[j] = 'x'
+					@right_color += 1
+					break
+				end
+			end
+		end
+		
+=begin		
 		last_guess.split("").map.with_index do |x, i|		
 			temp.map.with_index do |y, j|
-				#puts "i: #{i} & j: #{j} & temp[j]: #{temp[j]} & temp[i]: #{temp[i]} & last_guess[i]: #{last_guess[i]}"
-				if temp[i] == last_guess[i]		
+				#puts "i: #{i} & j: #{j} & temp[j]: #{temp[j]} & temp[i]: #{temp[i]} & last_guess[i]: #{last_guess[i]} & right spot: #{@right_spot} & right color: #{@right_color}"
+				if temp[i] == last_guess[i]
 					temp[i] = 'x'
 					@right_spot += 1
 					break
@@ -180,7 +210,9 @@ class Board
 				end
 			end
 		end
+=end
 	end
+
 end
 
 class PlayerAI < Board
