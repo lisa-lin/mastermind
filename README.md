@@ -17,8 +17,8 @@ To run the game, enter `ruby mastermind.rb` at your command-line.
 AI Algorithm Explanation
 ------------------------
 
-The AI you will play against use a slightly different implementation of [Donald Knuth five-guess algorithm](http://en.wikipedia.org/wiki/Mastermind_%28board_game%29#Five-guess_algorithm).
-I've change the sixth step because it's computationally expensive. Here is the algorithm: 
+The AI you will play against use a slightly different implementation of [Donald Knuth's five-guess algorithm](http://en.wikipedia.org/wiki/Mastermind_%28board_game%29#Five-guess_algorithm).
+I've changed some steps to make the code less computationally expensive. Here is the algorithm: 
 ```
 1. Create the set of 1296 possible codes. We have six colors that can be distributed in 4 positions, 
    so it's 6^4=1296 possible permutations.(allowing duplicates)
