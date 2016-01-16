@@ -53,7 +53,7 @@ class Board
 		@total_guesses = 12
 		@right_color = 0			# right color only
 		@right_spot = 0				# right color and spot
-		@possible_combos = COLORS.repeated_permutation(4).to_a			# 1296 possible combos		
+		@possible_combos = COLORS.repeated_permutation(4).to_a			# creates 1296 possible combos		
 	end
 	
 	def start
@@ -97,7 +97,6 @@ class Board
 	end
 	
 	def cpu_best_guess
-		#return "rrbb" if (@possible_combos.length == 1296)
 		return "rrgg" if @total_guesses - @count_guess == 12
 		return "bbyy" if @total_guesses - @count_guess == 11
 		return "oopp" if @total_guesses - @count_guess == 10
@@ -120,15 +119,15 @@ class Board
 			
 			# If last guess' right color and spot both equal 0, loop through lg_array 
 			# Delete combos with lg_array's colors from the set of possible combos
+
 			if @last_guess_rc + @last_guess_rs == 0
 				lg_array.each do |color|
 					@possible_combos.delete_if {|permutation| permutation.include?(color)}
 				end
 			end
-			
-			# Compare the sum of the last guess' rc and rs with the sum of the permutation's rc and rs
-			# If greater than then delete permutation from array
-			if ((@last_guess_rc + @last_guess_rs) > (@right_color + @right_spot))
+
+			# If results of the permutation compared to last guess differ, then delete permutation from array
+			if ((@last_guess_rc != @right_color) && (@last_guess_rs != @right_spot))
 				@possible_combos.delete(permutation)
 			end
 		end	
@@ -194,52 +193,11 @@ class Board
 				end
 			end
 		end
-		
-=begin		
-		last_guess.split("").map.with_index do |x, i|		
-			temp.map.with_index do |y, j|
-				#puts "i: #{i} & j: #{j} & temp[j]: #{temp[j]} & temp[i]: #{temp[i]} & last_guess[i]: #{last_guess[i]} & right spot: #{@right_spot} & right color: #{@right_color}"
-				if temp[i] == last_guess[i]
-					temp[i] = 'x'
-					@right_spot += 1
-					break
-				elsif temp[j] == last_guess[i]
-					temp[j] = 'x'
-					@right_color += 1
-					break
-				end
-			end
-		end
-=end
 	end
 
 end
-
-class PlayerAI < Board
-	# Knuth's Fives-guess algorithm
-		
-	def initialize(secret_code)
-		@possible_combos = Board::COLORS.repeated_permutation(4).to_a	#1296 possible combos
-		@guess = "xxxx"
-		@secret_code = secret_code
-	end
-	def start
-		cpu_guesses
-	end
-	
-	def cpu_guesses
-		unless guessed(@secret_code)
-			12.times do 
-				puts "What is your guess?"
-				@guess = "rrbb"
-				puts "Your guess is #{@guess}."
-				check_guess @guess
-			end
-		end
-	end
-end
 	
 
-
+###GAME STARTER###
 game = Game.new
 game.start

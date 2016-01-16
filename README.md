@@ -17,15 +17,17 @@ To run the game, enter `ruby mastermind.rb` at your command-line.
 AI Algorithm Explanation
 ------------------------
 
-The AI algorithm is similar to the one developed by Donald Knuth which solves the game in approximately 4.340 turns, however, unlike Knuth's algorithm, it does not rank subsequent guesses to maximize its chance of getting the code right.  Instead it just selects from the remaining possible codes randomly.  
-
-It takes the following steps:
-
-1. Guess a code in 'aabb' format. 
-2. Remove from the set of possibilities any code that yields a lower feedback score compared to the last guess.
-3. Make a random guess from the remaining set.
-4. Repeat until it wins.
+The AI you will play against use a slightly different implementation of [Donald Knuth five-guess algorithm](http://en.wikipedia.org/wiki/Mastermind_%28board_game%29#Five-guess_algorithm).
+I've change the sixth step because it's computationally expensive. Here is the algorithm: 
+```
+1. Create the set of 1296 possible codes. We have six colors that can be distributed in 4 positions, 
+   so it's 6^4=1296 possible permutations.(allowing duplicates)
+2. Start with these initial guesses: 'rrgg', 'bbyy' and 'oopp' to narrow the color choices.
+3. Play the guess to get a response.
+4. In case the response is four black pegs, you won the game. Otherwise continue to step 5
+5. Remove from S any code that would not give the same result if it(the guess) would be the secret code.
+6. Choose a random sample from the remaining codes of the set S.
+7. Repeat from step 3.
+```
 
 As this game is an excercise in illustrating software engineering, OOP, and project organization rather than computer science, the code is not optimized for minimal number of guesses.
-
-See [Mastermind Algorithm] (http://en.wikipedia.org/wiki/Mastermind_%28board_game%29#Five-guess_algorithm) on Wikipedia for more info.  
