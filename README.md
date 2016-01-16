@@ -22,7 +22,7 @@ I've changed some steps to make the code less computationally expensive. Here is
 ```
 1. Create the set of 1296 possible codes. We have six colors that can be distributed in 4 positions, 
    so it's 6^4=1296 possible permutations.(allowing duplicates)
-2. Start with these initial guesses: 'rrgg', 'bbyy' and 'oopp' to narrow the color choices.
+2. Start with these initial guesses: 'rrgg', 'bbyy' and 'oopp' to narrow down the color choices.
 3. Play the guess to get a response.
 4. In case the response is four black pegs, you won the game. Otherwise continue to step 5
 5. Remove from S any code that would not give the same result if it(the guess) would be the secret code.
