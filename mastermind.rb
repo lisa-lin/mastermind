@@ -65,7 +65,7 @@ class Board
 	def codebreaker
 		@secret_code = COLORS.sample(4).join
 		puts "Secret code has been generated."
-		puts @secret_code
+		#puts @secret_code
 		unless guessed(secret_code)
 			12.times do 
 				puts "What is your guess?"
@@ -79,7 +79,6 @@ class Board
 	def codemaker
 		puts "What shall the secret code be?"
 		@secret_code = gets.chomp
-		#summon_cpu
 		cpu_guesses
 	end
 	
@@ -131,13 +130,7 @@ class Board
 				@possible_combos.delete(permutation)
 			end
 		end	
-		puts @possible_combos.length
-	end
-	
-	
-	def summon_cpu
-		cpu = PlayerAI.new(@secret_code)
-		cpu.start
+		# puts @possible_combos.length
 	end
 	
 	def check_guess(current_guess, current_secret_code)
