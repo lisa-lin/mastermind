@@ -1,24 +1,14 @@
 class Game
-	attr_reader :game
-	
-	def initialize
-		@game = game
-	end
 	
 	def start
 		puts "Welcome to MASTERMIND!"
 		puts "Do you want to (P)lay or (Q)uit?"	
-		check_answer
-	end
-	
-	def check_answer
-		ans = gets.chomp.downcase
-		ans == "p" ? play : quit
+		gets.chomp.downcase == "p" ? play : quit
 	end
 	
 	def play
 		p = Player.new("Lisa")
-		p.hello
+		p.greet
 		board = Board.new
 		board.start
 	end
@@ -36,7 +26,7 @@ class Player
 		@name = name
 	end
 	
-	def hello
+	def greet
 		puts "Hello #{@name}!"
 	end
 end
@@ -58,8 +48,7 @@ class Board
 	
 	def start
 		puts "Do you want to be a code(b)reaker or a code(m)aker?"
-		ans = gets.chomp.downcase
-		ans == "m" ? codemaker : codebreaker
+		gets.chomp.downcase == "m" ? codemaker : codebreaker
 	end
 	
 	def codebreaker
