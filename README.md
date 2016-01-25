@@ -21,7 +21,7 @@ The AI you will play against use a slightly different implementation of [Donald 
 I've changed some steps to make the code less computationally expensive. Here is the algorithm: 
 ```
 1. Create the set of 1296 possible codes. We have six colors that can be distributed in 4 positions, 
-   so it's 6^4^ = 1296 possible permutations.(allowing duplicates)
+   so it's 6^4 = 1296 possible permutations.(allowing duplicates)
 2. Start with these initial guesses: 'rrgg', 'bbyy' and 'oopp' to narrow down the color choices.
 3. Play the guess to get a response.
 4. In case the response is four right spots, you won the game. Otherwise continue to step 5
