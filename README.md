@@ -27,7 +27,7 @@ I've changed some steps to make the code less computationally expensive. Here is
 4. In case the response is four right spots, you won the game. Otherwise continue to step 5
 5. Remove from S any code that would not give the same result if it(the guess) would be the secret code.
 6. Choose a random sample from the remaining codes of the set S.
-7. Repeat from step 3. 
+7. Repeat from step 3.
 ```
 
 As this game is an excercise in illustrating software engineering, OOP, and project organization rather than computer science, the code is not optimized for minimal number of guesses.
